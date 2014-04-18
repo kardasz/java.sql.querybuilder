@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="QueryBuilder-1.2:jar">
+    <output-path>$PROJECT_DIR$/build</output-path>
+    <root id="archive" name="QueryBuilder.jar">
+      <element id="module-output" name="QueryBuilder" />
+    </root>
+  </artifact>
+</component>
