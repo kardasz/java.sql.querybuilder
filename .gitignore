@@ -1,3 +1,7 @@
+/.idea
+/QueryBuilder.iml
+/atlassian-ide-plugin.xml
+
 *.class
 
 # Mobile Tools for Java (J2ME)
