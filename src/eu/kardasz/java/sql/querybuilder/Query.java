@@ -18,17 +18,17 @@ public class Query {
      * @throws java.sql.SQLException
      * @throws SQLSyntax
      */
-    private static void setPreparedStatement (java.sql.Connection connection, java.sql.PreparedStatement stmt, SQL query) throws java.sql.SQLException, SQLSyntax {
+    private static java.sql.PreparedStatement setPreparedStatement (java.sql.Connection connection, SQL query) throws java.sql.SQLException, SQLSyntax {
         String sql = query.toSQL();
         Map<String, Object> bind = query.getBindValues();
         List<Object> binds = new ArrayList();
-        Pattern pattern = Pattern.compile(":\\S+");
+        Pattern pattern = Pattern.compile(":\\w+");
         Matcher matcher = pattern.matcher(sql);
         while (matcher.find()) {
             binds.add(bind.get(matcher.group()));
         }
-        sql = sql.replaceAll(":\\S+", "?");
-        stmt = connection.prepareStatement(sql);
+        sql = sql.replaceAll(":\\w+", "?");
+        java.sql.PreparedStatement stmt = connection.prepareStatement(sql);
         int k = 1;
         for (Object obj : binds) {
             if (null == obj) {
@@ -37,5 +37,6 @@ public class Query {
                 stmt.setObject(k++, obj);
             }
         }
+        return stmt;
     }
 }
