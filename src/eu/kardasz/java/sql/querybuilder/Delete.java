@@ -18,7 +18,7 @@ public class Delete implements SQL {
     protected Map<String,Object> bind    = null;
     protected String table = null;
     protected List<Map> where = null;
-    protected Integer limit = null;
+    protected Long limit = null;
     protected List<String> order = null;
     
     /**
@@ -153,13 +153,21 @@ public class Delete implements SQL {
     }
 
     /**
-     * 
+     *
      * @param limit
-     * @return 
+     * @return
      */
-    public Delete limit (int limit) {
+    public Delete limit (Long limit) {
         this.limit = limit;
         return this;
+    }
+    /**
+     *
+     * @param limit
+     * @return
+     */
+    public Delete limit (int limit) {
+        return limit(Long.valueOf(limit));
     }
     
     /**
@@ -227,6 +235,7 @@ public class Delete implements SQL {
                 
         /* ORDER */
         if (this.order.size() > 0) {
+            sql.append(" ORDER BY ");
             boolean first = true;
             for (String expr : this.order) {
                 if (!first) {

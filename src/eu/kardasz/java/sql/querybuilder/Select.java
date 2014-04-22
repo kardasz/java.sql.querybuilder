@@ -25,8 +25,8 @@ public class Select implements SQL {
     protected List<String> from    = null;
     protected List<String> join    = null;
     protected List<Map> where   = null;
-    protected Integer limit   = null;
-    protected Integer offset  = null;
+    protected Long limit   = null;
+    protected Long offset  = null;
     protected String having  = null;
     protected List<String> order   = null;
     protected List<String> group   = null;
@@ -84,9 +84,11 @@ public class Select implements SQL {
      */
     public Select join (String type, String table, String condition, String[] cols) {
         StringBuilder sql = new StringBuilder(type.toUpperCase());
-        sql.append(" JOIN ON (");
+        sql.append(" JOIN ");
+        sql.append(table);
+        sql.append(" ON ( ");
         sql.append(condition);
-        sql.append(")");
+        sql.append(" )");
         
         if (null != cols && cols.length > 0) {
             select(cols);
@@ -182,9 +184,9 @@ public class Select implements SQL {
         
         if (null != bindValue) {
             if (bindValue instanceof Expr) {
-                where = where.replaceAll(":\\w+", ((Expr)bindValue).toString());
+                where = where.replaceAll(":\\S+", ((Expr)bindValue).toString());
             } else {
-                Pattern pattern = Pattern.compile(":\\w+");
+                Pattern pattern = Pattern.compile(":\\S+");
                 Matcher matcher = pattern.matcher(where);
                 while (matcher.find()) {
                     bindValue(matcher.group(), bindValue);
@@ -283,8 +285,7 @@ public class Select implements SQL {
      * @return 
      */
     public Select limit (int limit) {
-        this.limit = limit;
-        return this;
+        return limit(Long.valueOf(limit));
     }
     
     /**
@@ -293,6 +294,25 @@ public class Select implements SQL {
      * @return 
      */
     public Select offset (int offset) {
+        return offset(Long.valueOf(offset));
+    }
+
+    /**
+     *
+     * @param limit
+     * @return
+     */
+    public Select limit (Long limit) {
+        this.limit = limit;
+        return this;
+    }
+
+    /**
+     *
+     * @param offset
+     * @return
+     */
+    public Select offset (Long offset) {
         this.offset = offset;
         return this;
     }
@@ -446,6 +466,7 @@ public class Select implements SQL {
         
         /* ORDER */
         if (this.order.size() > 0) {
+            sql.append(" ORDER BY ");
             boolean first = true;
             for (String expr : this.order) {
                 if (!first) {

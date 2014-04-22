@@ -20,7 +20,7 @@ public class Update implements SQLSet {
     protected String table = null;
     protected List<String> set   = null;
     protected List<Map> where = null;
-    protected Integer limit = null;
+    protected Long limit = null;
     protected List<String> order = null;
     private static final String BIND_PREFIX = ":_";
     
@@ -166,13 +166,21 @@ public class Update implements SQLSet {
     }
 
     /**
-     * 
+     *
      * @param limit
-     * @return 
+     * @return
      */
-    public Update limit (int limit) {
+    public Update limit (Long limit) {
         this.limit = limit;
         return this;
+    }
+    /**
+     *
+     * @param limit
+     * @return
+     */
+    public Update limit (int limit) {
+        return limit(Long.valueOf(limit));
     }
     
     /**
@@ -267,6 +275,7 @@ public class Update implements SQLSet {
                 
         /* ORDER */
         if (this.order.size() > 0) {
+            sql.append(" ORDER BY ");
             boolean first = true;
             for (String expr : this.order) {
                 if (!first) {
